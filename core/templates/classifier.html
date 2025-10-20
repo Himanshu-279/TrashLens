@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}Start Classifying{% endblock %}
+{% load static %}
+
+{% block content %}
+<div id="main-content-wrapper">
+<div class="text-center max-w-2xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">Start Classifying</h1>
+    <p class="text-lg text-gray-600">Upload an image of your waste item and let our AI guide you to the right disposal method.</p>
+</div>
+
+<div class="mt-12 grid md:grid-cols-2 gap-8 items-start">
+    <div class="bg-white p-8 rounded-2xl shadow-xl h-[500px] flex flex-col">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-upload text-custom-green mr-3"></i>
+            Upload Your Image
+        </h2>
+        <form method="post" enctype="multipart/form-data" id="upload-form" class="flex flex-col flex-grow">
+            {% csrf_token %}
+            <div id="drop-zone" class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer hover:border-green-500 transition-colors flex-grow flex flex-col justify-center">
+                <div id="placeholder-content">
+                    <i class="fas fa-image text-5xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500">Drop your image here or click to browse</p>
+                </div>
+                <div id="preview-content" class="hidden">
+                    <img id="image-preview" src="#" alt="Image preview" class="max-h-48 mx-auto rounded-lg"/>
+                </div>
+                <input type="file" name="image_file" id="image_upload" class="hidden" accept="image/*">
+            </div>
+            <div class="mt-4 text-center">
+                <label for="image_upload" class="cursor-pointer bg-white text-custom-green font-bold py-2 px-6 rounded-lg border-2 border-custom-green hover:bg-green-50 transition-colors">
+                    Choose Image
+                </label>
+            </div>
+            <div id="filename-display" class="mt-4 text-center text-gray-600"></div>
+            <button type="submit" id="classify-btn" class="mt-auto w-full bg-custom-green text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-custom-green-dark transition-transform hover:scale-105 shadow-lg hidden">
+                <i class="fas fa-cogs mr-2"></i> Classify
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl h-[500px] flex flex-col justify-center"> <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">
+                <i class="fas fa-check-circle text-custom-green mr-3"></i>
+                Classification Result
+            </h2>
+            
+            {% if prediction %}
+                <div class="space-y-6 animate-fade-in">
+                    <div class="text-center">
+                        <p class="text-lg text-gray-600">This item is classified as:</p>
+                        <p class="text-4xl font-bold text-custom-green mt-1">{{ prediction|capfirst }}</p>
+                        <p class="text-md text-gray-500 mt-2">with {{ confidence|floatformat:2 }}% confidence</p>
+                    </div>
+                    
+                    <div>
+                        {% if recyclable %}
+                            <div class="bg-green-100 text-green-800 p-4 rounded-lg font-semibold flex items-center justify-center">
+                                <i class="fas fa-recycle mr-3"></i> Status: Recyclable
+                            </div>
+                        {% else %}
+                            <div class="bg-red-100 text-red-800 p-4 rounded-lg font-semibold flex items-center justify-center">
+                                <i class="fas fa-trash-alt mr-3"></i> Status: Not Recyclable
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center text-gray-400 flex-grow flex flex-col justify-center items-center">
+                    <i class="fas fa-poll text-6xl mb-4"></i>
+                    <p class="text-gray-500">Upload an image to see the classification result</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if prediction %}
+        <div class="pt-8">
+            <a href="{% url 'map_feedback' %}" class="w-full text-center block bg-gray-800 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-black transition-colors">
+                Give Feedback & Find Centers ➡️
+            </a>
+        </div> <!-- Yeh main-content-wrapper ka closing tag hai -->
+        {% endif %}
+    </div>
+</div>
+</div> <!-- Yeh main-content-wrapper ka closing tag hai -->
+
+<!-- ======================= NAYA LOADING ANIMATION SECTION ======================= -->
+<div id="loading-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center text-white z-50 text-center px-4">
+    <div class="relative w-24 h-24 mb-6">
+        <div class="absolute inset-0 border-4 border-custom-green/30 rounded-full"></div>
+        <div class="absolute inset-0 border-t-4 border-custom-green rounded-full animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+             <img src="{% static 'images/logo.png' %}" alt="Loading..." class="w-16 h-auto animate-pulse">
+        </div>
+    </div>
+    <h2 class="text-3xl font-bold mb-2">Analyzing Image...</h2>
+    <p id="loading-text" class="text-lg text-gray-300 w-full max-w-md"></p>
+</div>
+
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+    }
+</style>
+
+<script>
+    // ================== NAYA ANIMATION KA LOGIC ==================
+const uploadForm = document.getElementById('upload-form');
+const mainContentWrapper = document.getElementById('main-content-wrapper');
+const loadingOverlay = document.getElementById('loading-overlay');
+const loadingText = document.getElementById('loading-text');
+
+const loadingMessages = [
+    "Waking up the AI...",
+    "Analyzing pixels and patterns...",
+    "Comparing with thousands of waste images...",
+    "Identifying material composition...",
+    "Finalizing the classification...",
+    "Just a moment more, preparing your result..."
+];
+let messageIndex = 0;
+let intervalId;
+
+uploadForm.addEventListener('submit', function(e) {
+    if (fileInput.files.length === 0) {
+        e.preventDefault(); 
+        alert("Please select an image first.");
+        return;
+    }
+    if (mainContentWrapper) mainContentWrapper.style.display = 'none';
+    loadingOverlay.classList.remove('hidden');
+
+    loadingText.innerText = loadingMessages[0];
+    messageIndex = 1;
+    intervalId = setInterval(() => {
+        loadingText.innerText = loadingMessages[messageIndex % loadingMessages.length];
+        messageIndex++;
+    }, 2500);
+});
+
+// ================== AAPKA PURANA LOGIC (WAISA HI HAI) ==================
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('image_upload');
+    const filenameDisplay = document.getElementById('filename-display');
+    const classifyBtn = document.getElementById('classify-btn');
+    const placeholderContent = document.getElementById('placeholder-content');
+    const previewContent = document.getElementById('preview-content');
+    const imagePreview = document.getElementById('image-preview');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-green-500', 'bg-green-50');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-green-500', 'bg-green-50');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-green-500', 'bg-green-50');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            handleFile(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        filenameDisplay.textContent = `Selected: ${file.name}`;
+        classifyBtn.classList.remove('hidden');
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            placeholderContent.classList.add('hidden');
+            previewContent.classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
+{% endblock %}

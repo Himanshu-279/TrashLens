@@ -1,0 +1,19 @@
+# Environment variables
+.env
+
+# Database file
+db.sqlite3
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Static files (Render par alag se bante hain)
+staticfiles/
+
+# IDE folders
+.vscode/
+.idea/
+Dockerfile
+README.md

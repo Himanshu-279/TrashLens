@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TrashLens{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'custom-green': '#16a34a',
+                        'custom-green-dark': '#15803d',
+                        'light-gray': '#f3f4f6',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #16a34a;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        /* Mobile menu ke liye thodi aur styling */
+        .mobile-nav-link {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .mobile-nav-link.active {
+            color: #16a34a;
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body class="bg-light-gray">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="flex items-center">
+                <img src="{% static 'images/logo.png' %}" alt="TrashLens Logo" class="h-12 w-auto">
+            </a>
+
+            <!-- Desktop Menu (Badi screen ke liye) -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'home' %}" class="nav-link text-gray-600 hover:text-custom-green font-semibold {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="{% url 'how_it_works' %}" class="nav-link text-gray-600 hover:text-custom-green font-semibold {% if 'how-it-works' in request.path %}active{% endif %}">How It Works</a>
+                <a href="{% url 'waste_types' %}" class="nav-link text-gray-600 hover:text-custom-green font-semibold {% if 'waste-types' in request.path %}active{% endif %}">Waste Types</a>
+                <a href="{% url 'dos_and_donts' %}" class="nav-link text-gray-600 hover:text-custom-green font-semibold {% if 'dos-and-donts' in request.path %}active{% endif %}">Do's & Don'ts</a>
+                <a href="{% url 'about' %}" class="nav-link text-gray-600 hover:text-custom-green font-semibold {% if 'about' in request.path %}active{% endif %}">About</a>
+            </div>
+            
+            <!-- Get Started Button (Desktop) -->
+            <a href="{% url 'classifier' %}" class="hidden md:block bg-custom-green text-white font-bold py-2 px-6 rounded-lg hover:bg-custom-green-dark transition-transform hover:scale-105 shadow-md">
+                Get Started
+            </a>
+
+            <!-- Mobile Menu Button (Hamburger - sirf chhoti screen ke liye) -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 hover:text-custom-green focus:outline-none">
+                    <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu Panel (Shuru mein chhipa hua) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-semibold text-gray-700 hover:bg-green-50 {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="{% url 'how_it_works' %}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-semibold text-gray-700 hover:bg-green-50 {% if 'how-it-works' in request.path %}active{% endif %}">How It Works</a>
+                <a href="{% url 'waste_types' %}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-semibold text-gray-700 hover:bg-green-50 {% if 'waste-types' in request.path %}active{% endif %}">Waste Types</a>
+                <a href="{% url 'dos_and_donts' %}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-semibold text-gray-700 hover:bg-green-50 {% if 'dos-and-donts' in request.path %}active{% endif %}">Do's & Don'ts</a>
+                <a href="{% url 'about' %}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-semibold text-gray-700 hover:bg-green-50 {% if 'about' in request.path %}active{% endif %}">About</a>
+            </div>
+            <div class="px-4 pb-4">
+                <a href="{% url 'classifier' %}" class="block w-full text-center bg-custom-green text-white font-bold py-3 px-6 rounded-lg hover:bg-custom-green-dark transition shadow-md">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- JavaScript to toggle mobile menu -->
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            // Icon ko bars se cross (X) aur wapas badalne ke liye
+            if (hamburgerIcon.classList.contains('fa-bars')) {
+                hamburgerIcon.classList.remove('fa-bars');
+                hamburgerIcon.classList.add('fa-times');
+            } else {
+                hamburgerIcon.classList.remove('fa-times');
+                hamburgerIcon.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>

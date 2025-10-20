@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Welcome to TrashLens{% endblock %}
+{% block content %}
+<div class="text-center py-16">
+    <div class="flex justify-center mb-8">
+    <div class="relative">
+        <!-- Yeh logo ke peeche waali "light" hai -->
+        <div class="absolute -inset-3 bg-gradient-to-r from-green-400 to-blue-500 rounded-full blur-xl opacity-60 animate-pulse"></div>
+        <!-- Yeh aapka asli logo hai -->
+        <img src="{% static 'images/logo.png' %}" alt="TrashLens Logo" class="relative w-40 h-auto">
+    </div>
+</div>
+    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-4">Welcome to TrashLens</h1>
+    <p class="text-2xl font-light text-gray-600 mb-6">Snap – Classify – Recycle. Let AI Guide You.</p>
+    <p class="max-w-2xl mx-auto text-lg text-gray-500 mb-10">
+        Your smart guide to revolutionizing waste management. We leverage cutting-edge AI to help you classify waste accurately and make sustainable choices effortlessly.
+    </p>
+    <div class="flex justify-center space-x-4">
+        <a href="{% url 'classifier' %}" class="bg-custom-green text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-custom-green-dark transition-transform hover:scale-105 shadow-lg">
+            Start Classifying
+        </a>
+        <a href="{% url 'how_it_works' %}" class="bg-white text-gray-700 font-bold py-3 px-8 rounded-lg text-lg border-2 border-gray-300 hover:bg-gray-100 transition-colors">
+            Learn More
+        </a>
+    </div>
+</div>
+
+<div class="py-16">
+    <div class="grid md:grid-cols-3 gap-10">
+        <div class="bg-white p-8 rounded-xl shadow-md text-center transform hover:-translate-y-2 transition-transform">
+            <div class="inline-block bg-green-100 p-4 rounded-full mb-4">
+                <i class="fas fa-camera text-4xl text-custom-green"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Snap</h3>
+            <p class="text-gray-600">Upload an image of your waste item from your device or camera.</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-md text-center transform hover:-translate-y-2 transition-transform">
+            <div class="inline-block bg-green-100 p-4 rounded-full mb-4">
+                <i class="fas fa-brain text-4xl text-custom-green"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Classify</h3>
+            <p class="text-gray-600">Our AI model analyzes the image in seconds to identify the waste type.</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-md text-center transform hover:-translate-y-2 transition-transform">
+            <div class="inline-block bg-green-100 p-4 rounded-full mb-4">
+                <i class="fas fa-leaf text-4xl text-custom-green"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Act</h3>
+            <p class="text-gray-600">Get clear, step-by-step guidance for proper disposal and recycling.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

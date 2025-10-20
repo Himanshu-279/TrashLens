@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+{% block title %}Feedback & Map{% endblock %}
+{% load static %}
+{% block content %}
+<!-- Leaflet.js (Free Map) ke liye zaroori files -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div id="main-content-wrapper">
+<div class="container mx-auto px-4 py-8 md:py-16">
+    <div class="max-w-4xl mx-auto">
+        <!-- ======================= SECTION 1: FEEDBACK (Default Visible) ======================= -->
+        <div id="feedback-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 via-green-600 to-green-700 bg-clip-text text-transparent">
+                    Prediction Feedback
+                </h1>
+                <p class="text-gray-500 text-lg">Help us improve by sharing your feedback.</p>
+            </div>
+
+            {% if feedback_submitted %}
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6 rounded-lg shadow-md text-center" role="alert">
+                    <i class="fas fa-check-circle text-4xl mb-3 text-green-500"></i>
+                    <p class="font-bold text-xl">Thank you!</p>
+                    <p>Your feedback helps us improve our AI model.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'classifier' %}" class="bg-custom-green text-white font-bold py-2 px-6 rounded-lg hover:bg-custom-green-dark transition-colors">
+                            Classify Another Item
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <button id="show-map-btn-after-submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-green-500/50 text-green-600 font-semibold hover:bg-green-500/10 hover:border-green-500 transition-colors">
+                        <i class="fas fa-map-pin"></i>Find Nearest Disposal Center
+                    </button>
+                </div>
+            {% else %}
+                <div class="p-6 mb-8 bg-white/60 border border-green-500/20 shadow-lg shadow-green-500/10 backdrop-blur-sm rounded-2xl text-center space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">You uploaded this image:</p>
+                        <img src="data:image/jpeg;base64,{{ uploaded_image_b64 }}" alt="Uploaded Item" class="w-32 h-32 object-cover rounded-lg mx-auto shadow-sm border">
+                    </div>
+                    <hr>
+                    <div>
+                        <p class="text-gray-500 mb-2">Our Prediction:</p>
+                        <p class="text-3xl font-bold text-custom-green">{{ prediction|capfirst }}</p>
+                    </div>
+                </div>
+                <div class="p-6 sm:p-8 bg-white/60 border border-green-500/20 shadow-lg shadow-green-500/10 backdrop-blur-sm rounded-2xl">
+                    <form id="feedback-form" method="post" enctype="multipart/form-data" class="space-y-8">
+                        {% csrf_token %}
+                        <div>
+                            <label class="text-lg font-semibold mb-4 block text-gray-800">Is this prediction correct?</label>
+                            <!-- Responsive buttons (mobile par ek ke neeche ek) -->
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <label for="correct_yes" class="flex-1 flex items-center gap-3 bg-green-500/10 p-4 rounded-lg hover:bg-green-500/20 transition-all cursor-pointer border-2 border-transparent has-[:checked]:border-green-500">
+                                    <input type="radio" id="correct_yes" name="correct" value="Yes" class="hidden" checked>
+                                    <i class="fas fa-check-circle w-6 h-6 text-green-500"></i><span class="font-medium text-lg">Yes, Correct</span>
+                                </label>
+                                <label for="correct_no" class="flex-1 flex items-center gap-3 bg-red-500/10 p-4 rounded-lg hover:bg-red-500/20 transition-all cursor-pointer border-2 border-transparent has-[:checked]:border-red-500">
+                                    <input type="radio" id="correct_no" name="correct" value="No" class="hidden">
+                                    <i class="fas fa-times-circle w-6 h-6 text-red-500"></i><span class="font-medium text-lg">No, Incorrect</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="new-class-selector" class="hidden">
+                            <label class="text-lg font-semibold mb-4 block text-gray-800">What is the correct waste type?</label>
+                            <!-- Responsive grid (mobile par 2 column, usse bade par 3, aur fir 4) -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {% for class_name in class_names %}
+                                <button type="button" data-value="{{ class_name }}" class="waste-type-btn p-3 rounded-lg border-2 transition-all border-green-500/30 bg-green-500/5 text-gray-600 hover:border-green-500/50">{{ class_name|capfirst }}</button>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="new_class" id="correct-waste-type-input">
+                        </div>
+                        <div>
+                            <label for="user_comment" class="text-lg font-semibold mb-4 block text-gray-800">Additional Comments (Optional)</label>
+                            <textarea id="user_comment" name="user_comment" rows="4" placeholder="Share any additional thoughts..." class="w-full p-3 rounded-lg bg-gray-900/5 border-green-500/30 focus:border-green-500 focus:ring-green-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg hover:shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105">
+                            <i class="fas fa-paper-plane"></i>Submit Feedback
+                        </button>
+                    </form>
+                </div>
+                <div class="mt-8 text-center">
+                    <button id="show-map-btn" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-green-500/50 text-green-600 font-semibold hover:bg-green-500/10 hover:border-green-500 transition-colors">
+                        <i class="fas fa-map-pin"></i>Find Nearest Disposal Center
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- ======================= SECTION 2: MAP (Default Hidden) ======================= -->
+        <div id="map-section" class="hidden">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 via-green-600 to-green-700 bg-clip-text text-transparent">
+                    Nearest Disposal Center
+                </h1>
+                <p class="text-gray-500 text-lg">Find the closest waste management facility.</p>
+            </div>
+
+            <div id="map-container" class="w-full h-[50vh] md:h-[500px] rounded-2xl shadow-lg shadow-green-500/20 border-2 border-green-500/30 bg-gray-200 flex items-center justify-center">
+                <p id="map-loading-text" class="text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Loading map...</p>
+            </div>
+            
+            <div id="info-card" class="hidden mt-6 p-6 bg-white/60 border border-green-500/20 shadow-lg shadow-green-500/10 backdrop-blur-sm rounded-2xl">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500/20 p-3 rounded-full">
+                            <i class="fas fa-recycle w-6 h-6 text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 id="center-name" class="text-xl font-bold text-gray-800 mb-1"></h3>
+                            <p id="center-address" class="text-gray-600 mb-2"></p>
+                            <p id="center-distance" class="text-green-600 font-semibold"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Responsive buttons (mobile par ek ke neeche ek) -->
+            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <button id="show-feedback-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border-2 border-gray-400/50 text-gray-600 font-semibold hover:bg-gray-500/10 hover:border-gray-500 transition-colors">
+                    <i class="fas fa-arrow-left"></i>Back to Feedback
+                </button>
+                <a id="navigate-btn" href="#" target="_blank" class="hidden w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg hover:shadow-lg">
+                    <i class="fas fa-location-arrow"></i>Start Navigation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- ======================= NAYA FEEDBACK SAVING ANIMATION ======================= -->
+<div id="feedback-loading-overlay" class="hidden text-center py-16">
+    <div class="inline-block bg-white p-8 rounded-2xl shadow-lg">
+        <div class="relative w-16 h-16 mx-auto mb-4">
+             <div class="absolute inset-0 border-4 border-blue-500/30 rounded-full"></div>
+             <div class="absolute inset-0 border-t-4 border-blue-500 rounded-full animate-spin"></div>
+             <div class="absolute inset-0 flex items-center justify-center">
+                 <img src="{% static 'images/logo.png' %}" alt="Loading..." class="w-12 h-auto animate-pulse">
+             </div>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Submitting Feedback...</h1>
+        <p class="text-gray-600">Thank you for helping us improve our AI!</p>
+    </div>
+</div>
+
+<script>
+// Aapka saara JavaScript bilkul waisa hi hai, usmein koi badlaav nahi kiya gaya hai.
+document.addEventListener('DOMContentLoaded', function () {
+    const feedbackForm = document.getElementById('feedback-form');
+const mainContentWrapper = document.getElementById('main-content-wrapper');
+const feedbackLoadingOverlay = document.getElementById('feedback-loading-overlay');
+
+if (feedbackForm) {
+    feedbackForm.addEventListener('submit', function() {
+        if(mainContentWrapper) mainContentWrapper.style.display = 'none';
+        if(feedbackLoadingOverlay) feedbackLoadingOverlay.classList.remove('hidden');
+    });
+}
+    const feedbackSection = document.getElementById('feedback-section');
+    const mapSection = document.getElementById('map-section');
+    const showMapBtn = document.getElementById('show-map-btn');
+    const showFeedbackBtn = document.getElementById('show-feedback-btn');
+    const showMapBtnAfterSubmit = document.getElementById('show-map-btn-after-submit');
+
+    function openMap() {
+        feedbackSection.style.display = 'none';
+        mapSection.style.display = 'block';
+        initializeMapSequence();
+    }
+    
+    if (showMapBtn) {
+        showMapBtn.addEventListener('click', openMap);
+    }
+    if (showMapBtnAfterSubmit) {
+        showMapBtnAfterSubmit.addEventListener('click', openMap);
+    }
+
+    showFeedbackBtn.addEventListener('click', () => {
+        mapSection.style.display = 'none';
+        feedbackSection.style.display = 'block';
+    });
+
+    const radioYes = document.getElementById('correct_yes');
+    const radioNo = document.getElementById('correct_no');
+    const selectorDiv = document.getElementById('new-class-selector');
+    const hiddenInput = document.getElementById('correct-waste-type-input');
+    const wasteTypeButtons = document.querySelectorAll('.waste-type-btn');
+
+    function toggleSelector() {
+        if(radioNo && radioNo.checked) {
+            selectorDiv.classList.remove('hidden');
+        } else if (selectorDiv) {
+            selectorDiv.classList.add('hidden');
+            hiddenInput.value = '';
+            wasteTypeButtons.forEach(btn => {
+                btn.classList.remove('border-green-500', 'bg-green-500/20', 'text-green-600', 'font-semibold');
+                btn.classList.add('border-green-500/30', 'bg-green-500/5', 'text-gray-600');
+            });
+        }
+    }
+    
+    if (radioYes && radioNo) {
+        radioYes.addEventListener('change', toggleSelector);
+        radioNo.addEventListener('change', toggleSelector);
+        toggleSelector();
+    }
+
+    wasteTypeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            wasteTypeButtons.forEach(btn => {
+                btn.classList.remove('border-green-500', 'bg-green-500/20', 'text-green-600', 'font-semibold');
+                btn.classList.add('border-green-500/30', 'bg-green-500/5', 'text-gray-600');
+            });
+            this.classList.add('border-green-500', 'bg-green-500/20', 'text-green-600', 'font-semibold');
+            this.classList.remove('border-green-500/30', 'bg-green-500/5', 'text-gray-600');
+            hiddenInput.value = this.dataset.value;
+        });
+    });
+
+    let mapInitialized = false;
+    function initializeMapSequence() {
+        if (mapInitialized) return;
+
+        const mapContainer = document.getElementById('map-container');
+        const loadingText = document.getElementById('map-loading-text');
+        const infoCard = document.getElementById('info-card');
+        const navigateBtn = document.getElementById('navigate-btn');
+        const centers = JSON.parse('{{ centers_json|safe }}');
+        const googleApiKey = '{{ google_api_key|safe }}';
+
+        async function getRoute(startLon, startLat, endLon, endLat) {
+            const url = `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.routes && data.routes.length > 0) {
+                    return data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                }
+            } catch (error) { console.error("Error fetching route:", error); }
+            return null;
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function findNearestCenter(userLat, userLon) {
+            let nearest = null; let minDistance = Infinity;
+            if (!centers || centers.length === 0) {
+                return { Name: 'No centers found', Address: 'Please add centers to centers.csv', distance: 0, lat: userLat, lon: userLon };
+            }
+            centers.forEach(center => {
+                const distance = getDistance(userLat, userLon, center.lat, center.lon);
+                if (distance < minDistance) { minDistance = distance; nearest = center; }
+            });
+            return { ...nearest, distance: minDistance };
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                const nearestCenter = findNearestCenter(userLat, userLon);
+                initializeMap(userLat, userLon, nearestCenter);
+            },
+            () => {
+                // IMPORTANT: Removed alert() as it's bad practice and doesn't work well on HF Spaces
+                console.warn("Location access denied. Using default location.");
+                const defaultLat = 28.6139; const defaultLon = 77.2090;
+                const nearestCenter = findNearestCenter(defaultLat, defaultLon);
+                initializeMap(defaultLat, defaultLon, nearestCenter);
+            }
+        );
+
+        async function initializeMap(userLat, userLon, nearest) {
+            mapInitialized = true;
+            loadingText.style.display = 'none';
+            infoCard.classList.remove('hidden');
+            navigateBtn.classList.remove('hidden');
+            document.getElementById('center-name').innerText = nearest.Name;
+            document.getElementById('center-address').innerText = nearest.Address;
+            document.getElementById('center-distance').innerText = `${nearest.distance.toFixed(2)} km away`;
+            navigateBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLon}&destination=${nearest.lat},${nearest.lon}&travelmode=driving`;
+            
+            if (googleApiKey) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.google.com/maps/embed/v1/directions?key=${googleApiKey}&origin=${userLat},${userLon}&destination=${nearest.lat},${nearest.lon}&mode=driving`;
+                iframe.width="100%"; iframe.height="100%"; iframe.frameBorder="0";
+                mapContainer.innerHTML = '';
+                mapContainer.appendChild(iframe);
+            } else {
+                const map = L.map(mapContainer).setView([userLat, userLon], 12);
+                L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(map);
+                
+                var userIcon = L.divIcon({
+                    html: '<i class="fas fa-user" style="font-size: 20px; color: #1d4ed8;"></i>',
+                    className: 'bg-white rounded-full p-2 shadow-lg flex items-center justify-center',
+                    iconSize: [35, 35], iconAnchor: [17, 35]
+                });
+                L.marker([userLat, userLon], {icon: userIcon}).addTo(map).bindPopup('Your Location');
+
+                var centerIcon = L.divIcon({
+                    html: '<i class="fas fa-recycle" style="font-size: 20px; color: #16a34a;"></i>',
+                    className: 'bg-white rounded-full p-2 shadow-lg flex items-center justify-center',
+                    iconSize: [35, 35], iconAnchor: [17, 35]
+                });
+                L.marker([nearest.lat, nearest.lon], {icon: centerIcon}).addTo(map).bindPopup(`<b>${nearest.Name}</b>`);
+
+                const routeCoords = await getRoute(userLon, userLat, nearest.lon, nearest.lat);
+                if (routeCoords) {
+                    const polyline = L.polyline(routeCoords, {color: '#1d4ed8', weight: 5, opacity: 0.7}).addTo(map);
+                    map.fitBounds(polyline.getBounds().pad(0.1));
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}The Challenge - TrashLens{% endblock %}
+
+{% block content %}
+<div class="text-center max-w-3xl mx-auto mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">The Challenge</h1>
+    <p class="text-2xl font-medium text-custom-green">A World Overflowing with Waste</p>
+</div>
+
+<!-- Global Waste Crisis Card -->
+<div class="bg-white p-8 rounded-2xl shadow-lg max-w-4xl mx-auto">
+    <div class="flex items-start space-x-6">
+        <div class="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-red-100 rounded-full">
+            <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+        </div>
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">The Global Waste Crisis</h2>
+            <p class="mt-2 text-lg text-gray-600">
+                Every year, the world generates over 2 billion tonnes of municipal solid waste. A significant portion of this waste ends up in landfills, contributing to pollution. While recycling is a powerful solution, one of the biggest hurdles is improper waste sorting. This is the information and guidance gap we need to bridge.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="py-20">
+    <div class="grid md:grid-cols-3 gap-8 text-center">
+        <!-- Stat 1: 2 Billion -->
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex justify-center mb-4">
+                <div class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full">
+                    <i class="fas fa-globe-americas text-3xl text-red-500"></i>
+                </div>
+            </div>
+            <h3 class="text-5xl font-extrabold text-gray-800">2 Billion</h3>
+            <p class="mt-2 text-gray-600">Tonnes of waste generated annually</p>
+        </div>
+        
+        <!-- Stat 2: 30% -->
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex justify-center mb-4">
+                <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
+                    <i class="fas fa-recycle text-3xl text-green-500"></i>
+                </div>
+            </div>
+            <h3 class="text-5xl font-extrabold text-gray-800">30%</h3>
+            <p class="mt-2 text-gray-600">Could be recycled with proper sorting</p>
+        </div>
+
+        <!-- Stat 3: 70% -->
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <div class="flex justify-center mb-4">
+                <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
+                    <i class="fas fa-chart-line text-3xl text-green-500"></i>
+                </div>
+            </div>
+            <h3 class="text-5xl font-extrabold text-gray-800">70%</h3>
+            <p class="mt-2 text-gray-600">Increase in waste by 2050</p>
+        </div>
+    </div>
+</div>
+
+<!-- Our Solution Section -->
+<div class="bg-custom-green text-white p-12 rounded-3xl max-w-5xl mx-auto text-center">
+    <div class="inline-block bg-white p-5 rounded-full mb-6">
+        <i class="fas fa-recycle text-5xl text-custom-green"></i>
+    </div>
+    <h2 class="text-4xl font-bold mb-4">Our Solution</h2>
+    <p class="text-lg max-w-3xl mx-auto">
+        TrashLens bridges this gap by providing instant, AI-powered waste classification. We make it simple for everyone to dispose of waste correctly, turning confusion into confident action for a more sustainable future.
+    </p>
+</div>
+<!-- Making a Difference Section -->
+<div class="text-center py-20 max-w-3xl mx-auto">
+    <h2 class="text-4xl font-bold text-gray-900 mb-4">Making a Difference Together</h2>
+    <p class="text-lg text-gray-600">
+        By helping people classify waste correctly, we're not just reducing contamination in recycling streams; we're empowering communities to build a cleaner, greener world, one piece of trash at a time.
+    </p>
+</div>
+{% endblock %}
