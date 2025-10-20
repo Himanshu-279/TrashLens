@@ -2,8 +2,6 @@ import os
 from django.conf import settings
 import numpy as np
 import requests
-import huggingface_hub
-import requests
 import cloudinary
 import cloudinary.uploader
 from supabase import create_client, Client
