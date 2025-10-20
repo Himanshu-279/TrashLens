@@ -2,9 +2,6 @@ import os
 from django.conf import settings
 import numpy as np
 import requests
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.efficientnet_v2 import preprocess_input
 import huggingface_hub
 import requests
 import cloudinary
