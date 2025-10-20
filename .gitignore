@@ -15,5 +15,4 @@ staticfiles/
 # IDE folders
 .vscode/
 .idea/
-Dockerfile
 README.md
