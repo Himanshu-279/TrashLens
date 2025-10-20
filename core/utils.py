@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 import numpy as np
 import requests
+import huggingface_hub
 import cloudinary
 import cloudinary.uploader
 from supabase import create_client, Client
@@ -9,14 +10,6 @@ import io
 import base64
 from PIL import Image 
 
-# ==========================
-# Configuration
-# ==========================
-REPO_ID = "Himanshu-279/TrashLens-Model" # Aapka Repo ID
-MODEL_FILE_NAME = "Effi_WRM_updated.keras"
-BASE_MODEL_NAME = "Effi_WRM.keras"
-
-model = None # Model ko shuru mein load nahi karenge (Lazy Loading)
 
 
 

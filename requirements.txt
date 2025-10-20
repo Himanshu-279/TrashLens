@@ -10,3 +10,4 @@ geopy==2.4.1
 folium==0.16.0
 googlemaps==4.10.0
 whitenoise==6.7.0
+huggingface-hub==0.23.0
