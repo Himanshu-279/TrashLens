@@ -16,8 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Aakhir mein, poora code copy karo
 COPY . .
 
-EXPOSE 10000 # Render 10000 port ka istemal karta hai
+# build.sh script ko chalane ki ijaazat do
+RUN chmod +x ./build.sh
+
+# Render 10000 port ka istemal karta hai
+EXPOSE 10000
 
 # YEH HAI ASLI JAADU - AAKHRI COMMAND
-# Yeh saari commands tab chalengi jab app LIVE hoga, jahan /var/data maujood hai
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:10000"]
+# Yeh saari commands tab chalengi jab app LIVE hoga
+CMD ["sh", "-c", "./build.sh && python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:10000"]
