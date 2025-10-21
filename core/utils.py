@@ -8,18 +8,16 @@ import cloudinary.uploader
 from supabase import create_client, Client
 import io
 import base64
-from PIL import Image 
-
-
-
-
+from PIL import Image
 
 # ==========================
 # Data Dictionaries for Pages
 # ==========================
+
+# Defines the list of class names our model can predict.
 class_names = ['battery', 'biological', 'brown-glass', 'cardboard', 'clothes', 'green-glass', 'metal', 'paper', 'plastic', 'shoes', 'trash', 'white-glass']
 
-# Data for Waste Types Page
+# Contains details for the "Waste Types" page.
 waste_info_details = {
     "battery": {"image_url": "https://i.ibb.co/L5rK5z7/battery.jpg", "title": "Battery", "info": "Includes AA, AAA, and car batteries. Requires special disposal."},
     "biological": {"image_url": "https://i.ibb.co/d7sC5t4/biological.jpg", "title": "Biological", "info": "Food scraps, fruit peels, yard waste. Can be composted."},
@@ -35,7 +33,7 @@ waste_info_details = {
     "white-glass": {"image_url": "https://i.ibb.co/KjJz1Wz/white-glass.jpg", "title": "White Glass", "info": "Clear glass jars (jam, pickles), beverage bottles. Fully recyclable."}
 }
 
-# Data for Do's and Don'ts Page
+# Contains details for the "Do's and Don'ts" page.
 dos_list = [
     "Rinse containers before recycling to remove food residue.",
     "Flatten cardboard boxes to save space in bins and trucks.",
@@ -54,9 +52,7 @@ donts_list = [
     "Don't forget to empty and rinse liquids from bottles and containers.",
 ]
 
-# Data for Recycling Info
-# utils.py mein, PURANI recycling_info ko is NAYI wali se badal do
-
+# Contains detailed recycling steps for each waste category.
 recycling_info = {
     'battery': { "recyclable": True, "steps": [
         "Do Not Put in Regular Trash: Batteries contain heavy metals that can contaminate soil and water.",
@@ -139,104 +135,64 @@ recycling_info = {
         "Check for Special Instructions: Some items like styrofoam may have special drop-off locations."
     ]},
 }
+# Assign the same recycling info for all glass types.
 for cat in ['brown-glass', 'green-glass', 'white-glass']:
     recycling_info[cat] = recycling_info['glass']
 
-# def get_model():
-#     """
-#     Model ko zaroorat padne par Hugging Face se download karta hai (Streamlit jaisa).
-#     """
-#     global model
-#     if model is None:
-#         print("Model not loaded. Attempting to download/load from Hugging Face Hub...")
-        
-#         # settings.py se token uthao
-#         HF_TOKEN = getattr(settings, 'HF_TOKEN', None)
-#         if not HF_TOKEN:
-#             print("WARNING: HF_TOKEN not found in settings.py. Download may fail for private repo.")
 
-#         try:
-#             # Pehle updated model download karne ki koshish karo
-#             model_path = huggingface_hub.hf_hub_download(
-#                 repo_id=REPO_ID,
-#                 filename=MODEL_FILE_NAME,
-#                 token=HF_TOKEN,  # Token ka istemal yahan hoga
-#             )
-#             print("Successfully loaded retrained model from cache or download.")
-#         except huggingface_hub.utils.EntryNotFoundError:
-#             # Agar na mile, to base model download karo
-#             print("Retrained model not found. Loading base model...")
-#             model_path = huggingface_hub.hf_hub_download(
-#                 repo_id=REPO_ID,
-#                 filename=BASE_MODEL_NAME,
-#                 token=HF_TOKEN,
-#             )
-#             print("Successfully loaded base model from cache or download.")
-        
-#         model = load_model(model_path, compile=False)
-#         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-#         print("Model loaded into memory.")
-#     return model    
-
-
-# # <<< PURANE classify_image KI JAGAH YEH NAYA WALA DAALEIN >>>
-# def classify_image(img):
-#     local_model = get_model() # Yeh model ko load ya download karega
-#     img_resized = img.resize((384, 384))
-#     img_array = image.img_to_array(img_resized)
-#     img_array = np.expand_dims(img_array, axis=0)
-#     img_array = preprocess_input(img_array)
-#     preds = local_model.predict(img_array)
-#     pred_class_index = np.argmax(preds, axis=1)[0]
-#     pred_class_name = class_names[pred_class_index]
-#     confidence = preds[0][pred_class_index] * 100
-#     return pred_class_name, confidence, preds[0]
+# ==========================
+# Core Application Logic
+# ==========================
 
 def classify_image(img):
     """
-    Ab yeh function parde ke peeche 'Dimag' (API) se baat karta hai.
+    Sends an image to the backend Model API for classification.
     """
     print("Preparing to call the Model API...")
     
-    # ================== YEH NAYI LINE HAI ==================
+    # Retrieve the Model API URL from Django settings.
     MODEL_API_URL = getattr(settings, 'MODEL_API_URL', None)
-    # =======================================================
+    
     if not MODEL_API_URL:
+        print("CRITICAL ERROR: MODEL_API_URL is not configured in settings.py or environment variables!")
         raise Exception("MODEL_API_URL is not set in settings.py!")
 
-    # Image ko bytes mein badlo
+    # Convert the Pillow Image object to bytes for the API request.
     byte_arr = io.BytesIO()
     img.save(byte_arr, format='PNG')
     image_bytes = byte_arr.getvalue()
 
     try:
-        # API ko request bhejo
+        # Send a POST request to the prediction endpoint of the API.
         response = requests.post(
-            f"{MODEL_API_URL}/predict", 
+            f"{MODEL_API_URL.rstrip('/')}/predict", 
             files={"file": ("image.png", image_bytes, "image/png")},
-            timeout=120 # 60 second tak intezaar karo
+            timeout=120 # Wait up to 120 seconds for a response.
         )
-        response.raise_for_status() # Agar koi error aaye (jaise 404, 500)
+        response.raise_for_status() # Raise an exception for HTTP error codes (4xx or 5xx).
 
-        # API se mile result ko padho
+        # Parse the JSON response from the API.
         data = response.json()
-        pred_class_name = data["prediction"]
-        confidence = data["confidence"]
+        pred_class_name = data.get("prediction", "error")
+        confidence = data.get("confidence", 0.0)
 
         print(f"API returned: {pred_class_name} with {confidence:.2f}% confidence.")
 
-        # Humein ab 'preds' array ki zaroorat nahi hai, toh ek dummy bhej dete hain
+        # Return the results. A dummy list is returned for the 'preds' array as it's not needed.
         return pred_class_name, confidence, []
 
     except requests.exceptions.RequestException as e:
-        # Agar API fail ho, toh ek default result bhejo taaki app crash na ho
+        print("!!!!!!!!!!!!!! API CALL FAILED !!!!!!!!!!!!!!")
+        print(f"Error calling model API: {e}")
+        # Return a default error result if the API call fails, to prevent the app from crashing.
         return "error", 0.0, []
 
-# <<< YEH FUNCTION POORI TARAH SE BADAL DIYA GAYA HAI >>>
 def save_feedback(predicted, correct, new_class, pil_img, user_comment):
-    """Saves feedback to Supabase and Cloudinary."""
+    """
+    Saves user feedback by uploading the image to Cloudinary and the record to Supabase.
+    """
     try:
-        # Step 1: Cloudinary ko configure karo settings.py se keys lekar
+        # Step 1: Configure Cloudinary using keys from settings.
         print("Configuring Cloudinary...")
         cloudinary.config(
             cloud_name = settings.CLOUDINARY_CLOUD_NAME,
@@ -245,7 +201,7 @@ def save_feedback(predicted, correct, new_class, pil_img, user_comment):
             secure=True
         )
 
-        # Step 2: Image ko Cloudinary par upload karo
+        # Step 2: Convert the image to bytes and upload to Cloudinary.
         byte_arr = io.BytesIO()
         pil_img.save(byte_arr, format='PNG')
         byte_arr = byte_arr.getvalue()
@@ -260,11 +216,11 @@ def save_feedback(predicted, correct, new_class, pil_img, user_comment):
 
         print(f"Image uploaded successfully: {image_url}")
 
-        # Step 3: Supabase ko configure karo
+        # Step 3: Configure the Supabase client.
         print("Connecting to Supabase...")
         supabase_client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
         
-        # Step 4: Record ko Supabase mein save karo
+        # Step 4: Prepare and insert the feedback record into the Supabase table.
         record = {
             "predicted_class": predicted,
             "is_correct": correct == "Yes",
@@ -278,11 +234,15 @@ def save_feedback(predicted, correct, new_class, pil_img, user_comment):
         print("Feedback saved successfully to Supabase.")
 
     except Exception as e:
-        # Isse aapko terminal mein saaf error dikhega
-        print(f"!!!!!!!!!!!!!! AN ERROR OCCURRED !!!!!!!!!!!!!!")
-        print(f"An error occurred while saving feedback: {e}")
+        # Log any errors that occur during the process.
+        print(f"!!!!!!!!!!!!!! AN ERROR OCCURRED WHILE SAVING FEEDBACK !!!!!!!!!!!!!!")
+        print(f"Error details: {e}")
 
 def get_image_as_base64(path, max_size=(400, 400)):
+    """
+    A utility function to open an image, resize it, and encode it as a Base64 string.
+    This is not currently used in the main application flow but can be useful.
+    """
     try:
         img = Image.open(path)
         img.thumbnail(max_size)
@@ -292,4 +252,4 @@ def get_image_as_base64(path, max_size=(400, 400)):
     except Exception as e:
         print(f"Error processing image {path}: {e}")
         return None
-    
+

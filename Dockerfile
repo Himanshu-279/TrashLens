@@ -33,4 +33,4 @@ RUN chmod +x ./build.sh
 EXPOSE 7860
 
 # Aakhri command, build script chalayega
-CMD ["./build.sh"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:7860"]
