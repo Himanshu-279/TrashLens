@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'a-default-secret-key-for-build-process')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
@@ -112,10 +112,8 @@ STATICFILES_DIRS = [
 STATIC_URL = 'static/'
 # YEH HAI ASLI JAADU - AAKHRI BADLAAV
 # Humne static files ko bhi /data folder mein save karne ko kaha hai
-if DEBUG:
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-else:
-    STATIC_ROOT = '/var/data/staticfiles'
+# YEH NAYI, SAHI LINE HAI
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
