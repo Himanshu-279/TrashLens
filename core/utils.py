@@ -151,7 +151,7 @@ def classify_image(img):
     print("Preparing to call the Model API...")
     
     # Retrieve the Model API URL from Django settings.
-    MODEL_API_URL = getattr(settings, 'MODEL_API_URL', None)
+    MODEL_API_URL = getattr(settings, 'MODEL_API_URL')
     
     if not MODEL_API_URL:
         print("CRITICAL ERROR: MODEL_API_URL is not configured in settings.py or environment variables!")
