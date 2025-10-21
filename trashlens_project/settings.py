@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -76,18 +77,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'trashlens_project.wsgi.application'
 
-if DEBUG:
+# Purana DATABASES wala poora if/else block hata dein
+
+# Yeh naya code paste karein
+if 'DATABASE_URL' in os.environ:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
 else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '/var/data/db.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 

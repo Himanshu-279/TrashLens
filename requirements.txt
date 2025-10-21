@@ -11,3 +11,5 @@ folium==0.16.0
 googlemaps==4.10.0
 whitenoise==6.7.0
 huggingface-hub==0.23.0
+dj-database-url
+psycopg2-binary
