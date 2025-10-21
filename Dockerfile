@@ -32,5 +32,8 @@ RUN chmod +x ./build.sh
 
 EXPOSE 7860
 
+# Render ki persistent disk ke liye zaroori folders banayein
+RUN mkdir -p /var/data/staticfiles
+
 # Aakhri command, build script chalayega
 CMD ["sh", "-c", "python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:7860"]
