@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from PIL import Image
 import base64
 import io
+from django.utils.safestring import mark_safe 
 import pandas as pd 
 from django.conf import settings
 from . import utils
@@ -17,6 +18,68 @@ def how_it_works_view(request):
 def about_view(request):
     """Renders the 'About' page which contains 'The Challenge'."""
     return render(request, 'about.html')
+
+def download_app_page(request):
+    apk_download_url = "https://github.com/anshikachaturavedibtechcs22-bit/My-Android-App-Releases/releases/download/v1.0.0/app-debug.apk"
+
+    # Hero Section Stats (React code se match)
+    stats = [
+        { "value": "10K+", "label": "Active Users" },
+        { "value": "50K+", "label": "Items Scanned" },
+        { "value": "95%", "label": "Accuracy" }
+    ]
+
+    # Screenshots Section (React code se match)
+    screenshots_data = [
+        # image_url mein 'static/' ke baad wala path daalein
+        { "id": 1, "title": "Home Screen", "color_class": "gradient-1", "image_url": "images/home.png" },
+        { "id": 2, "title": "Scan Item", "color_class": "gradient-2", "image_url": "images/scan.png" },
+        { "id": 3, "title": "Results", "color_class": "gradient-3", "image_url": "images/result.png" },
+        { "id": 4, "title": "Map View", "color_class": "gradient-4", "image_url": "images/map.png" }
+        # Apni image files ke naam yahan daalein
+    ]
+    screenshots = [
+        {**data, "delay": i * 100} for i, data in enumerate(screenshots_data) # 0, 100, 200, 300
+    ]
+
+    # Features Section (React code se match, 'Leaf' icon ke saath)
+    features_data = [
+        { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>"""), 
+          "title": "AI Recognition", "description": "Instantly identify waste with camera" },
+        
+        { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>"""), 
+          "title": "Find Centers", "description": "Locate nearest disposal centers" },
+        
+        # Leaf icon SVG (React code se match karne ke liye)
+        { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4.4 7-7.5 7-7.5s7 3.1 7 7.5c0 4.4-7 7.5-7 7.5Z"></path><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"></path></svg>"""), 
+          "title": "Eco Impact", "description": "Track your recycling impact" }
+    ]
+    features = [
+        {**data, "delay": i * 150} for i, data in enumerate(features_data) # 0, 150, 300
+    ]
+
+    # Benefits Section (React code se match)
+    benefits_data = [
+        "AI-powered waste recognition with 95% accuracy",
+        "Find nearest disposal centers with live navigation",
+        "Track your environmental impact in real-time",
+        "Learn proper disposal methods for any waste type",
+        "Join a community of eco-conscious users",
+        "Free to download and use, no hidden charges"
+    ]
+    benefits = [
+        {"text": benefit, "delay": i * 100} for i, benefit in enumerate(benefits_data) # 0, 100, 200...
+    ]
+    
+    context = {
+        'apk_url': apk_download_url,
+        'stats': stats,
+        'screenshots': screenshots,
+        'features': features,
+        'benefits': benefits
+    }
+    
+    return render(request, 'download_final.html', context)
 
 # views.py mein PURANE waste_types_view ko isse BADAL do
 

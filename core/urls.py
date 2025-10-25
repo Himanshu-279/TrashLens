@@ -10,4 +10,5 @@ urlpatterns = [
     path('dos-and-donts/', views.dos_and_donts_view, name='dos_and_donts'),
     path('result/', views.result_view, name='result'),
     path('feedback/', views.map_feedback_view, name='map_feedback'),
+    path('download/', views.download_app_page, name='download_app'),
 ]

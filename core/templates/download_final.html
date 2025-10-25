@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Download TrashLens Android App
+{% endblock title %}
+
+{% block custom_css %}
+    <style>
+        /* --- Custom Colors & Theme --- */
+        :root {
+            --trashlens-primary: #28a745;
+            --trashlens-accent: #86efac;
+            --trashlens-text-dark: #1f2937;
+            --trashlens-text-muted: #6b7280;
+            --trashlens-card-light: rgba(255, 255, 255, 0.6);
+            --bg-gradient-hero: #f8fcf9;
+        }
+
+        /* --- Animations --- */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+            50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+        }
+
+        /* --- BASE RESETS FOR THIS PAGE ONLY --- */
+        .download-page-final {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .download-page-final h1, .download-page-final h2, .download-page-final h3, .download-page-final h4, .download-page-final h5, .download-page-final h6,
+         .download-page-final span,  .download-page-final ul, .download-page-final li,
+        .download-page-final button, .download-page-final a {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+            box-sizing: border-box;
+            line-height: 1.5;
+            color: var(--trashlens-text-dark);
+        }
+        .download-page-final ul { list-style: none !important; }
+        .download-page-final a, .download-page-final button { text-decoration: none !important; cursor: pointer; background-color: transparent; }
+        .download-page-final button:focus, .download-page-final a:focus { outline: none; }
+        .download-page-final .card { background-color: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+        .download-page-final .card-body { padding: 0 !important; }
+        .download-page-final .btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; padding: 0 !important; margin: 0 !important; border: none !important; border-radius: 0 !important; background-color: transparent !important; color: inherit !important; box-shadow: none !important; font-weight: normal !important; text-align: center !important; vertical-align: middle !important; cursor: pointer !important; user-select: none !important; line-height: 1.5 !important; transition: none !important; text-decoration: none !important; }
+
+        /* --- Utility Classes (Tailwind Style) --- */
+        /* ... (Saari utility classes jaise pehle thi) ... */
+        .download-page-final .min-h-screen { min-height: 100vh; }
+        .download-page-final .container { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+        .download-page-final .mx-auto { margin-left: auto; margin-right: auto; }
+        .download-page-final .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .download-page-final .py-16 { padding-top: 0rem; padding-bottom: 4rem; }
+        .download-page-final .mb-16 { margin-bottom: 4rem !important; }
+        .download-page-final .mb-12 { margin-bottom: 3rem !important; }
+        .download-page-final .mb-8 { margin-bottom: 2rem !important; }
+        .download-page-final .mb-6 { margin-bottom: 1.5rem !important; }
+        .download-page-final .mb-4 { margin-bottom: 1rem !important; }
+        .download-page-final .mb-3 { margin-bottom: 0.75rem !important; }
+        .download-page-final .mb-2 { margin-bottom: 0.5rem !important; }
+        .download-page-final .mb-20 { margin-bottom: 5rem !important; }
+        .download-page-final .mt-1 { margin-top: 0.25rem !important; }
+        .download-page-final .mr-2 { margin-right: 0.5rem !important; }
+        .download-page-final .p-0 { padding: 0 !important; }
+        .download-page-final .p-6 { padding: 1.5rem !important; }
+        .download-page-final .p-8 { padding: 2rem !important; }
+        .download-page-final .p-12 { padding: 3rem !important; }
+        .download-page-final .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .download-page-final .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .download-page-final .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .download-page-final .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .download-page-final .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .download-page-final .px-12 { padding-left: 3rem; padding-right: 3rem; }
+        .download-page-final .pb-6 { padding-bottom: 1.5rem; }
+        .download-page-final .gap-2 { gap: 0.5rem; }
+        .download-page-final .gap-4 { gap: 1rem; }
+        .download-page-final .gap-6 { gap: 1.5rem; }
+        .download-page-final .gap-8 { gap: 2rem; }
+        .download-page-final .space-y-6 > * + * { margin-top: 1.5rem !important; }
+        .download-page-final .flex { display: flex !important; }
+        .download-page-final .inline-flex { display: inline-flex !important; }
+        .download-page-final .grid { display: grid !important; }
+        .download-page-final .items-center { align-items: center !important; }
+        .download-page-final .items-start { align-items: flex-start !important; }
+        .download-page-final .items-end { align-items: flex-end !important; }
+        .download-page-final .justify-center { justify-content: center !important; }
+        .download-page-final .flex-col { flex-direction: column !important; }
+        .download-page-final .flex-wrap { flex-wrap: wrap !important; }
+        .download-page-final .flex-shrink-0 { flex-shrink: 0 !important; }
+        .download-page-final .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .download-page-final .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (min-width: 768px) {
+            .download-page-final .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .download-page-final .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .download-page-final .md\:text-7xl { font-size: 4.5rem !important; line-height: 1 !important; }
+        }
+        @media (min-width: 640px) {
+             .download-page-final .sm\:flex-row { flex-direction: row !important; }
+        }
+        .download-page-final .absolute { position: absolute; }
+        .download-page-final .relative { position: relative; }
+        .download-page-final .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .download-page-final .z-10 { z-index: 10; }
+        .download-page-final .max-w-2xl { max-width: 42rem; }
+        .download-page-final .max-w-4xl { max-width: 56rem; }
+        .download-page-final .max-w-5xl { max-width: 64rem; }
+        .download-page-final .max-w-6xl { max-width: 72rem; }
+        .download-page-final .w-4 { width: 1rem; }
+        .download-page-final .h-4 { height: 1rem; }
+        .download-page-final .w-5 { width: 1.25rem; }
+        .download-page-final .h-5 { height: 1.25rem; }
+        .download-page-final .w-6 { width: 1.5rem; }
+        .download-page-final .h-6 { height: 1.5rem; }
+        .download-page-final .w-8 { width: 2rem; }
+        .download-page-final .h-8 { height: 2rem; }
+        .download-page-final .w-16 { width: 4rem; }
+        .download-page-final .h-16 { height: 4rem; }
+        .download-page-final .rounded-full { border-radius: 9999px !important; }
+        .download-page-final .rounded-lg { border-radius: 0.5rem !important; }
+        .download-page-final .rounded-xl { border-radius: 0.75rem !important; }
+        .download-page-final .rounded-2xl { border-radius: 1rem !important; }
+        .download-page-final .rounded-3xl { border-radius: 1.5rem !important; }
+        .download-page-final .border { border-width: 1px !important; border-style: solid !important; }
+        .download-page-final .border-2 { border-width: 2px !important; border-style: solid !important; }
+        .download-page-final .border-white\/20 { border-color: rgba(255, 255, 255, 0.2) !important; }
+        .download-page-final .border-trashlens-primary-20 { border-color: rgba(40, 167, 69, 0.2) !important; }
+        .download-page-final .border-trashlens-primary { border-color: var(--trashlens-primary) !important; }
+        .download-page-final .overflow-hidden { overflow: hidden; }
+        .download-page-final .opacity-0 { opacity: 0; }
+        .download-page-final .opacity-30 { opacity: 0.3; }
+        .download-page-final .group:hover .group-hover\:opacity-100 { opacity: 1; }
+        .download-page-final .blur-3xl { filter: blur(64px); -webkit-filter: blur(64px); }
+        .download-page-final .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        .download-page-final .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        .download-page-final .duration-300 { transition-duration: 300ms; }
+        .download-page-final .duration-500 { transition-duration: 500ms; }
+        .download-page-final .text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+        .download-page-final .text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+        .download-page-final .text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+        .download-page-final .text-3xl { font-size: 1.875rem !important; line-height: 2.25rem !important; }
+        .download-page-final .text-4xl { font-size: 2.25rem !important; line-height: 2.5rem !important; }
+        .download-page-final .text-5xl { font-size: 3rem !important; line-height: 1 !important; }
+        .download-page-final .font-semibold { font-weight: 600 !important; }
+        .download-page-final .font-bold { font-weight: 700 !important; }
+        .download-page-final .text-center { text-align: center !important; }
+        .download-page-final .text-white { color: white !important; }
+        .download-page-final .text-trashlens-primary { color: var(--trashlens-primary) !important; }
+        .download-page-final .fill-trashlens-primary { fill: var(--trashlens-primary) !important; }
+        .download-page-final .text-trashlens-text-dark { color: var(--trashlens-text-dark) !important; }
+        .download-page-final .text-trashlens-text-muted { color: var(--trashlens-text-muted) !important; }
+        .download-page-final .hover-text-white:hover { color: white !important; }
+        .download-page-final .bg-gradient-hero { background-color: var(--bg-gradient-hero) !important; }
+        .download-page-final .bg-gradient-radial { background-image: radial-gradient(circle, rgba(40, 167, 69, 0.3) 0%, transparent 70%); }
+        .download-page-final .bg-gradient-text { background-image: linear-gradient(to right, var(--trashlens-primary), var(--trashlens-accent)); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
+        .download-page-final .gradient-1 { background-image: linear-gradient(to br, rgba(40, 167, 69, 0.2), rgba(134, 239, 172, 0.2)) !important; }
+        .download-page-final .gradient-2 { background-image: linear-gradient(to br, rgba(134, 239, 172, 0.2), rgba(192, 132, 252, 0.2)) !important; }
+        .download-page-final .gradient-3 { background-image: linear-gradient(to br, rgba(192, 132, 252, 0.2), rgba(40, 167, 69, 0.2)) !important; }
+        .download-page-final .gradient-4 { background-image: linear-gradient(to br, rgba(40, 167, 69, 0.2), rgba(74, 222, 128, 0.2)) !important; }
+        .download-page-final .bg-gradient-to-br {} .download-page-final .from-trashlens-primary\/5 {} .download-page-final .to-trashlens-accent\/5 {} .download-page-final .from-trashlens-primary\/10 {} .download-page-final .to-trashlens-accent\/10 {} .download-page-final .from-black\/60 {} .download-page-final .to-transparent {}
+        .download-page-final .bg-trashlens-primary-10 { background-color: rgba(40, 167, 69, 0.1) !important; }
+        .download-page-final .bg-trashlens-card-light { background-color: var(--trashlens-card-light) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .download-page-final .hover-bg-trashlens-primary:hover { background-color: var(--trashlens-primary) !important; }
+        .download-page-final .shadow-trashlens { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important; }
+        .download-page-final .shadow-glow { box-shadow: 0 0 20px 5px rgba(40, 167, 69, 0.4) !important; }
+        .download-page-final .hover-shadow-glow:hover { box-shadow: 0 0 25px 8px rgba(40, 167, 69, 0.4) !important; }
+        .download-page-final .hover-scale-105:hover { transform: scale(1.05); }
+        .download-page-final .hover-translate-y-2:hover { transform: translateY(-0.5rem); }
+        .download-page-final .aspect-ratio-9x16 { aspect-ratio: 9 / 16; }
+        .download-page-final .animate-fade-in { animation: fade-in 0.5s ease-out forwards; opacity: 0; }
+        .download-page-final .group:hover .group-hover-animate-bounce { animation: bounce 1s infinite; }
+        .download-page-final .btn-success-custom { background-color: var(--trashlens-primary) !important; border-color: var(--trashlens-primary) !important; color: white !important; border-radius: 0.5rem !important; font-size: 1.1rem !important; padding: 0.8rem 2rem !important; }
+        .download-page-final .btn-success-custom:hover { background-color: #218838 !important; border-color: #218838 !important; }
+        .download-page-final .btn-outline-success-custom { border-width: 2px !important; border-style: solid !important; border-color: var(--trashlens-primary) !important; color: var(--trashlens-primary) !important; background-color: transparent !important; border-radius: 0.5rem !important; font-size: 1.1rem !important; padding: 0.8rem 2rem !important; }
+        .download-page-final .btn-outline-success-custom:hover { background-color: var(--trashlens-primary) !important; border-color: var(--trashlens-primary) !important; color: white !important; }
+        .download-page-final .cta-btn-success { padding: 0.8rem 3rem !important; }
+        .download-page-final .cta-btn-outline { padding: 0.8rem 3rem !important; }
+
+        /* --- Specific Card Overrides --- */
+        .download-page-final .custom-card {
+             background-color: #ffffff !important;
+             /* border: 1px solid rgba(0, 0, 0, 0.125) !important; */ /* Halka border remove kar diya */
+             border: 1px solid var(--border-trashlens-primary-20) !important; /* Halka green border add kiya (features card jaisa) */
+             border-radius: 0.75rem !important; /* rounded-xl */
+             overflow: hidden;
+             box-shadow: var(--shadow-trashlens) !important; /* Halka shadow add kiya */
+         }
+         .download-page-final .custom-card-content {
+             padding: 2rem !important; /* p-8 */
+         }
+         /* Styles for "Ready to Make a Difference?" CTA card (Image 2 style) */
+         .download-page-final .cta-card-final {
+             background-color: var(--bg-green-light-cta) !important; /* Halka green background */
+             border: 2px solid var(--border-trashlens-primary-20) !important; /* Greenish border */
+             border-radius: 1.5rem !important; /* rounded-3xl */
+             box-shadow: var(--shadow-glow) !important; /* Glow shadow */
+             padding: 3rem !important; /* p-12 */
+             text-align: center !important; /* Centered text */
+         }
+         /* Special card styles ko comment out kar diya gaya hai */
+         /*
+         .download-page-final .benefits-card { ... }
+         .download-page-final .benefits-card-content { ... }
+         .download-page-final .cta-card { ... }
+         */
+
+    </style>
+{% endblock custom_css %}
+
+
+{% block content %}
+<div class="min-h-screen bg-gradient-hero download-page-final">
+    <main class="container mx-auto px-4 py-16">
+        <!-- ===== Hero Section ===== -->
+        <div class="text-center mb-20 relative">
+            <div class="absolute inset-0 bg-gradient-radial opacity-30 blur-3xl"></div>
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 bg-trashlens-primary-10 border border-trashlens-primary-20 rounded-full px-6 py-2 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="var(--trashlens-primary)" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span class="text-sm font-semibold text-trashlens-text-dark">Rated 4.8 on App Stores</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="bg-gradient-text bg-clip-text text-transparent">TrashLens</span>
+                    <br />
+                    <span class="text-trashlens-text-dark">Mobile App</span>
+                </h1>
+                <p class="text-xl text-trashlens-text-muted max-w-2xl mx-auto mb-8">
+                    Scan, classify, and dispose waste responsibly with AI-powered recognition.
+                    Your pocket-sized guide to a cleaner planet.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="{{ apk_url }}" download
+                       class="btn btn-success-custom shadow-trashlens hover-shadow-glow transition-all duration-300 group flex items-center no-underline text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2 group-hover-animate-bounce">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download for Android
+                    </a>
+                    <a href="#"
+                       class="btn btn-outline-success-custom shadow-trashlens hover-shadow-glow transition-all duration-300 group flex items-center no-underline text-lg">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2 group-hover-animate-bounce">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download for iOS
+                    </a>
+                </div>
+                <div class="flex flex-wrap justify-center gap-8 text-center">
+                    {% for stat in stats %}
+                    <div class="bg-trashlens-card-light backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-trashlens">
+                        <div class="text-3xl font-bold bg-gradient-text bg-clip-text text-transparent mb-2">{{ stat.value }}</div>
+                        <div class="text-trashlens-text-muted text-sm">{{ stat.label }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- ===== END Hero Section ===== -->
+
+        <!-- ===== Screenshots Section (CHANGED HTML) ===== -->
+        <div id="screenshots-section" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-4"> <span class="bg-gradient-text bg-clip-text text-transparent">Experience the App</span> </h2>
+            <p class="text-center text-trashlens-text-muted mb-12 max-w-2xl mx-auto text-lg"> See how TrashLens makes waste management effortless with intuitive design and powerful features </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                {% for screenshot in screenshots %}
+                <div class="group relative animate-fade-in" data-animation-delay="{{ screenshot.delay }}ms">
+                    <!-- Screenshot Card uses screenshot-card class now -->
+                    <div class="screenshot-card hover-shadow-glow transition-all duration-500 hover-scale-105 hover-translate-y-2 rounded-xl">
+                        <div class="aspect-ratio-9x16 {{ screenshot.color_class }} relative"> {/* Removed flexbox, added relative */}
+                            {/* --- Use img tag for actual screenshot --- */}
+                            <img src="{% static screenshot.image_url %}"
+                                 alt="{{ screenshot.title }}"
+                                 class="screenshot-image absolute inset-0 w-full h-full object-cover"> {/* Added classes for styling image */}
+
+                            {/* --- Hover Effect --- */}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                                <span class="text-white font-semibold text-lg">{{ screenshot.title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- ===== END Screenshots Section ===== -->
+
+        <!-- ===== Features Section ===== -->
+        <div class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-4">
+                <span class="bg-gradient-text bg-clip-text text-transparent">Powerful Features</span>
+            </h2>
+            <p class="text-center text-trashlens-text-muted mb-12 max-w-2xl mx-auto text-lg">
+                Everything you need to make waste disposal smart and sustainable
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                {% for feature in features %}
+                <div
+                    class="custom-card shadow-trashlens hover-shadow-glow transition-all duration-500 border border-trashlens-primary-20 hover-scale-105 animate-fade-in group rounded-xl"
+                    data-animation-delay="{{ feature.delay }}ms"
+                >
+                    <div class="custom-card-content p-8 text-center">
+                        <div class="w-16 h-16 mx-auto mb-6 bg-gradient-radial rounded-2xl flex items-center justify-center shadow-trashlens group-hover:shadow-glow transition-all duration-300">
+                            {{ feature.icon_svg|safe }}
+                        </div>
+                        <h3 class="text-xl font-bold text-trashlens-text-dark mb-3">
+                            {{ feature.title }}
+                        </h3>
+                        <p class="text-trashlens-text-muted text-lg">
+                            {{ feature.description }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- ===== END Features Section ===== -->
+
+        <!-- ===== Benefits Section (CHANGED HTML) ===== -->
+        <div class="mb-20 max-w-4xl mx-auto">
+             <!-- Use simple custom-card -->
+            <div class="custom-card rounded-xl">
+                 <!-- Use simple custom-card-content with p-8 padding -->
+                <div class="custom-card-content p-8 ">
+                    <h2 class="text-3xl font-bold text-center mb-8">
+                        <span class="bg-gradient-text bg-clip-text text-transparent">Why Choose TrashLens?</span>
+                    </h2>
+                    <ul class="space-y-6">
+                        {% for benefit in benefits %}
+                        <li
+                            class="flex items-start gap-4 animate-fade-in"
+                            data-animation-delay="{{ benefit.delay }}ms"
+                        >
+                            <div class="w-6 h-6 rounded-full bg-trashlens-primary flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <p class="text-lg text-trashlens-text-dark">{{ benefit.text }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- ===== END Benefits Section ===== -->
+
+        <!-- ===== CTA Section (CHANGED HTML) ===== -->
+         <!-- Use simple custom-card with text-center and p-8 padding -->
+        <div class=" rounded-xl p-8 text-center shadow-glow transition-all duration-300 ">
+            <h2 class="text-4xl font-bold mb-4">
+                <span class="bg-gradient-text bg-clip-text text-transparent">Ready to Make a Difference?</span>
+            </h2>
+            <p class="text-xl text-trashlens-text-muted mb-8 max-w-2xl mx-auto" style="text-align: center !important;"> 
+                Download TrashLens now and start your journey towards sustainable waste management
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{{ apk_url }}" download
+                   class="btn btn-success-custom cta-btn-success shadow-trashlens hover-shadow-glow transition-all duration-300 group flex items-center no-underline text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2 group-hover-animate-bounce">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Now
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-outline-success-custom cta-btn-outline shadow-trashlens hover-shadow-glow transition-all duration-300 group flex items-center no-underline text-lg"
+                    onclick="document.getElementById('screenshots-section').scrollIntoView({ behavior: 'smooth' })">
+                    View Screenshots
+                </button>
+            </div>
+        </div>
+        <!-- ===== END CTA Section ===== -->
+    </main>
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+<!-- Yeh JavaScript animation delay ko apply karne ke liye zaroori hai -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const animatedElements = document.querySelectorAll('.download-page-final .animate-fade-in[data-animation-delay]');
+      animatedElements.forEach(el => {
+        const delayValue = el.dataset.animationDelay;
+        if (delayValue && !isNaN(parseFloat(delayValue))) {
+             el.style.animationDelay = delayValue + 'ms';
+        } else {
+             console.warn("Invalid animation-delay value found:", delayValue, "on element:", el);
+        }
+      });
+    });
+</script>
+{% endblock extra_js %}
