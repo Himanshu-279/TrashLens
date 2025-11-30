@@ -10,9 +10,8 @@ import io
 import base64
 from PIL import Image
 
-# ==========================
+
 # Data Dictionaries for Pages
-# ==========================
 
 # Defines the list of class names our model can predict.
 class_names = ['battery', 'biological', 'brown-glass', 'cardboard', 'clothes', 'green-glass', 'metal', 'paper', 'plastic', 'shoes', 'trash', 'white-glass']
@@ -140,9 +139,8 @@ for cat in ['brown-glass', 'green-glass', 'white-glass']:
     recycling_info[cat] = recycling_info['glass']
 
 
-# ==========================
 # Core Application Logic
-# ==========================
+
 
 def classify_image(img):
     """
