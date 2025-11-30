@@ -22,27 +22,26 @@ def about_view(request):
 def download_app_page(request):
     apk_download_url = "https://github.com/anshikachaturavedibtechcs22-bit/My-Android-App-Releases/releases/download/v1.0.0/app-debug.apk"
 
-    # Hero Section Stats (React code se match)
+    # Hero Section Stats
     stats = [
         { "value": "10K+", "label": "Active Users" },
         { "value": "50K+", "label": "Items Scanned" },
         { "value": "95%", "label": "Accuracy" }
     ]
 
-    # Screenshots Section (React code se match)
+    # Screenshots Section
     screenshots_data = [
         # image_url mein 'static/' ke baad wala path daalein
         { "id": 1, "title": "Home Screen", "color_class": "gradient-1", "image_url": "images/home.png" },
         { "id": 2, "title": "Scan Item", "color_class": "gradient-2", "image_url": "images/scan.png" },
         { "id": 3, "title": "Results", "color_class": "gradient-3", "image_url": "images/result.png" },
         { "id": 4, "title": "Map View", "color_class": "gradient-4", "image_url": "images/map.png" }
-        # Apni image files ke naam yahan daalein
     ]
     screenshots = [
         {**data, "delay": i * 100} for i, data in enumerate(screenshots_data) # 0, 100, 200, 300
     ]
 
-    # Features Section (React code se match, 'Leaf' icon ke saath)
+    # Features Section 
     features_data = [
         { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>"""), 
           "title": "AI Recognition", "description": "Instantly identify waste with camera" },
@@ -50,7 +49,7 @@ def download_app_page(request):
         { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>"""), 
           "title": "Find Centers", "description": "Locate nearest disposal centers" },
         
-        # Leaf icon SVG (React code se match karne ke liye)
+        # Leaf icon 
         { "icon_svg": mark_safe("""<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--trashlens-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4.4 7-7.5 7-7.5s7 3.1 7 7.5c0 4.4-7 7.5-7 7.5Z"></path><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"></path></svg>"""), 
           "title": "Eco Impact", "description": "Track your recycling impact" }
     ]
@@ -58,7 +57,7 @@ def download_app_page(request):
         {**data, "delay": i * 150} for i, data in enumerate(features_data) # 0, 150, 300
     ]
 
-    # Benefits Section (React code se match)
+    # Benefits Section 
     benefits_data = [
         "AI-powered waste recognition with 95% accuracy",
         "Find nearest disposal centers with live navigation",
@@ -81,15 +80,10 @@ def download_app_page(request):
     
     return render(request, 'download_final.html', context)
 
-# views.py mein PURANE waste_types_view ko isse BADAL do
-
-# views.py mein PURANE waste_types_view ko isse BADAL do
 
 def waste_types_view(request):
     """Renders the Waste Types page with new design, icons, and hover colors."""
     
-    # Har category ke liye icon aur color theme define karo
-    # Yeh React code se milte-julte hain
     icons_and_colors = {
         "plastic": {"icon": "fa-box", "color_theme": "blue"},
         "biological": {"icon": "fa-leaf", "color_theme": "green"},
@@ -103,12 +97,10 @@ def waste_types_view(request):
         "trash": {"icon": "fa-trash-alt", "color_theme": "zinc"}, # Represents General Waste
     }
 
-    # Glass ki sabhi categories ke liye same style
     icons_and_colors["brown-glass"] = icons_and_colors["glass"]
     icons_and_colors["green-glass"] = icons_and_colors["glass"]
     icons_and_colors["white-glass"] = icons_and_colors["glass"]
 
-    # Final data taiyar karo template ke liye
     waste_types_data = {}
     for key, details in utils.waste_info_details.items():
         theme = icons_and_colors.get(key, {"icon": "fa-question-circle", "color_theme": "gray"})
@@ -122,7 +114,6 @@ def waste_types_view(request):
     context = {'waste_types': waste_types_data}
     return render(request, 'waste_types.html', context)
 
-# views.py mein PURANE dos_and_donts_view ko isse BADAL do
 
 def dos_and_donts_view(request):
     """Renders the Do's and Don'ts page with new design data."""
@@ -168,17 +159,13 @@ def classifier_view(request):
             request.session['feedback_submitted'] = False
             request.session.modified = True
             
-            # NAYE RESULT PAGE PAR BHEJ DO
             return redirect('result')
 
         except Exception as e:
             return render(request, 'classifier.html', {'error': f"An error occurred: {e}"})
 
-    # Agar GET request hai, to sirf upload form dikhao
     return render(request, 'classifier.html')
 
-
-# NEW Result Page View
 def result_view(request):
     prediction = request.session.get('prediction')
     if not prediction:
@@ -220,8 +207,7 @@ def map_feedback_view(request):
         request.session['feedback_submitted'] = True
         request.session.modified = True
         return redirect('map_feedback')
-    
-    # MAP KE LIYE DATA BHEJNE KA LOGIC
+
     try:
         centers_df = pd.read_csv("centers.csv")
         centers_json = centers_df.to_json(orient='records')
