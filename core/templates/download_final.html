@@ -51,8 +51,7 @@
         .download-page-final .card-body { padding: 0 !important; }
         .download-page-final .btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; padding: 0 !important; margin: 0 !important; border: none !important; border-radius: 0 !important; background-color: transparent !important; color: inherit !important; box-shadow: none !important; font-weight: normal !important; text-align: center !important; vertical-align: middle !important; cursor: pointer !important; user-select: none !important; line-height: 1.5 !important; transition: none !important; text-decoration: none !important; }
 
-        /* --- Utility Classes (Tailwind Style) --- */
-        /* ... (Saari utility classes jaise pehle thi) ... */
+        
         .download-page-final .min-h-screen { min-height: 100vh; }
         .download-page-final .container { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
         .download-page-final .mx-auto { margin-left: auto; margin-right: auto; }
@@ -203,12 +202,6 @@
              padding: 3rem !important; /* p-12 */
              text-align: center !important; /* Centered text */
          }
-         /* Special card styles ko comment out kar diya gaya hai */
-         /*
-         .download-page-final .benefits-card { ... }
-         .download-page-final .benefits-card-content { ... }
-         .download-page-final .cta-card { ... }
-         */
 
     </style>
 {% endblock custom_css %}
@@ -262,9 +255,9 @@
                 </div>
             </div>
         </div>
-        <!-- ===== END Hero Section ===== -->
+        <!--  END Hero Section  -->
 
-        <!-- ===== Screenshots Section (CHANGED HTML) ===== -->
+        <!-- Screenshots Section  -->
         <div id="screenshots-section" class="mb-20">
             <h2 class="text-4xl font-bold text-center mb-4"> <span class="bg-gradient-text bg-clip-text text-transparent">Experience the App</span> </h2>
             <p class="text-center text-trashlens-text-muted mb-12 max-w-2xl mx-auto text-lg"> See how TrashLens makes waste management effortless with intuitive design and powerful features </p>
@@ -289,9 +282,9 @@
                 {% endfor %}
             </div>
         </div>
-        <!-- ===== END Screenshots Section ===== -->
+        <!-- END Screenshots Section -->
 
-        <!-- ===== Features Section ===== -->
+        <!-- Features Section  -->
         <div class="mb-20">
             <h2 class="text-4xl font-bold text-center mb-4">
                 <span class="bg-gradient-text bg-clip-text text-transparent">Powerful Features</span>
@@ -320,9 +313,9 @@
                 {% endfor %}
             </div>
         </div>
-        <!-- ===== END Features Section ===== -->
+        <!-- END Features Section  -->
 
-        <!-- ===== Benefits Section (CHANGED HTML) ===== -->
+        <!-- Benefits Section -->
         <div class="mb-20 max-w-4xl mx-auto">
              <!-- Use simple custom-card -->
             <div class="custom-card rounded-xl">
@@ -349,10 +342,10 @@
                 </div>
             </div>
         </div>
-        <!-- ===== END Benefits Section ===== -->
+        <!--END Benefits Section -->
 
-        <!-- ===== CTA Section (CHANGED HTML) ===== -->
-         <!-- Use simple custom-card with text-center and p-8 padding -->
+        <!--CTA Section-->
+         
         <div class=" rounded-xl p-8 text-center shadow-glow transition-all duration-300 ">
             <h2 class="text-4xl font-bold mb-4">
                 <span class="bg-gradient-text bg-clip-text text-transparent">Ready to Make a Difference?</span>
@@ -376,14 +369,13 @@
                 </button>
             </div>
         </div>
-        <!-- ===== END CTA Section ===== -->
+        <!-- END CTA Section  -->
     </main>
 </div>
 {% endblock content %}
 
 
 {% block extra_js %}
-<!-- Yeh JavaScript animation delay ko apply karne ke liye zaroori hai -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       const animatedElements = document.querySelectorAll('.download-page-final .animate-fade-in[data-animation-delay]');
