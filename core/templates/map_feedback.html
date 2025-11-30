@@ -2,13 +2,12 @@
 {% block title %}Feedback & Map{% endblock %}
 {% load static %}
 {% block content %}
-<!-- Leaflet.js (Free Map) ke liye zaroori files -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <div id="main-content-wrapper">
 <div class="container mx-auto px-4 py-8 md:py-16">
     <div class="max-w-4xl mx-auto">
-        <!-- ======================= SECTION 1: FEEDBACK (Default Visible) ======================= -->
+        <!-- FEEDBACK -->
         <div id="feedback-section">
             <div class="text-center mb-12">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 via-green-600 to-green-700 bg-clip-text text-transparent">
@@ -89,7 +88,7 @@
             {% endif %}
         </div>
 
-        <!-- ======================= SECTION 2: MAP (Default Hidden) ======================= -->
+        <!--  SECTION 2: MAP -->
         <div id="map-section" class="hidden">
             <div class="text-center mb-10">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 via-green-600 to-green-700 bg-clip-text text-transparent">
@@ -117,7 +116,7 @@
                 </div>
             </div>
             
-            <!-- Responsive buttons (mobile par ek ke neeche ek) -->
+            <!-- Responsive buttons -->
             <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                 <button id="show-feedback-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border-2 border-gray-400/50 text-gray-600 font-semibold hover:bg-gray-500/10 hover:border-gray-500 transition-colors">
                     <i class="fas fa-arrow-left"></i>Back to Feedback
@@ -130,7 +129,6 @@
     </div>
 </div>
 </div>
-<!-- ======================= NAYA FEEDBACK SAVING ANIMATION ======================= -->
 <div id="feedback-loading-overlay" class="hidden text-center py-16">
     <div class="inline-block bg-white p-8 rounded-2xl shadow-lg">
         <div class="relative w-16 h-16 mx-auto mb-4">
@@ -146,7 +144,6 @@
 </div>
 
 <script>
-// Aapka saara JavaScript bilkul waisa hi hai, usmein koi badlaav nahi kiya gaya hai.
 document.addEventListener('DOMContentLoaded', function () {
     const feedbackForm = document.getElementById('feedback-form');
 const mainContentWrapper = document.getElementById('main-content-wrapper');
@@ -271,7 +268,6 @@ if (feedbackForm) {
                 initializeMap(userLat, userLon, nearestCenter);
             },
             () => {
-                // IMPORTANT: Removed alert() as it's bad practice and doesn't work well on HF Spaces
                 console.warn("Location access denied. Using default location.");
                 const defaultLat = 28.6139; const defaultLon = 77.2090;
                 const nearestCenter = findNearestCenter(defaultLat, defaultLon);
