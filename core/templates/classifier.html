@@ -78,13 +78,13 @@
             <a href="{% url 'map_feedback' %}" class="w-full text-center block bg-gray-800 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-black transition-colors">
                 Give Feedback & Find Centers ➡️
             </a>
-        </div> <!-- Yeh main-content-wrapper ka closing tag hai -->
+        </div>
         {% endif %}
     </div>
 </div>
-</div> <!-- Yeh main-content-wrapper ka closing tag hai -->
+</div> 
 
-<!-- ======================= NAYA LOADING ANIMATION SECTION ======================= -->
+<!-- NEW LOADING ANIMATION SECTION-->
 <div id="loading-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex flex-col items-center justify-center text-white z-50 text-center px-4">
     <div class="relative w-24 h-24 mb-6">
         <div class="absolute inset-0 border-4 border-custom-green/30 rounded-full"></div>
@@ -108,7 +108,7 @@
 </style>
 
 <script>
-    // ================== NAYA ANIMATION KA LOGIC ==================
+    //  NEW ANIMATION LOGIC
 const uploadForm = document.getElementById('upload-form');
 const mainContentWrapper = document.getElementById('main-content-wrapper');
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -142,7 +142,6 @@ uploadForm.addEventListener('submit', function(e) {
     }, 2500);
 });
 
-// ================== AAPKA PURANA LOGIC (WAISA HI HAI) ==================
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('image_upload');
     const filenameDisplay = document.getElementById('filename-display');
