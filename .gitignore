@@ -9,7 +9,7 @@ db.sqlite3
 __pycache__/
 *.pyc
 
-# Static files (Render par alag se bante hain)
+# Static files
 staticfiles/
 
 # IDE folders
