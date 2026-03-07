@@ -1,4 +1,5 @@
 import os
+import gc
 from django.conf import settings
 import numpy as np
 import requests
@@ -93,7 +94,7 @@ recycling_info = {
         "Sharp Edges: Be careful with sharp lids. You can tuck them inside the can.",
         "No Hazardous Containers: Containers that held hazardous materials like paint should not be recycled."
     ]},
-    'biological': { "recyclable": False, "steps": [
+    'biological': { "recyclable": True, "steps": [
         "Separate Organic Waste: Keep a separate bin in your kitchen for food scraps, peels, and leftovers.",
         "Find a Compost Method: You can create a compost pile in your backyard or use a compost bin.",
         "No Meat or Dairy in Home Compost: Avoid adding meat, bones, or dairy as they can attract pests.",
@@ -175,6 +176,9 @@ def classify_image(img):
         confidence = data.get("confidence", 0.0)
 
         print(f"API returned: {pred_class_name} with {confidence:.2f}% confidence.")
+        # Free Memory
+        del image_bytes # Memory khali karo
+        gc.collect()
 
         # Return the results. A dummy list is returned for the 'preds' array as it's not needed.
         return pred_class_name, confidence, []
