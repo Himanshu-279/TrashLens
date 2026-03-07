@@ -16,4 +16,6 @@ RUN chmod +x ./build.sh
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "./build.sh && python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:10000"]
+# CMD ["sh", "-c", "./build.sh && python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:10000"]
+
+CMD ["sh", "-c", "./build.sh && python manage.py migrate && gunicorn trashlens_project.wsgi --bind 0.0.0.0:10000 --workers 1 --threads 1 --timeout 120"]
