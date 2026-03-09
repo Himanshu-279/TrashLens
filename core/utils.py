@@ -177,8 +177,8 @@ def classify_image(img):
 
         print(f"API returned: {pred_class_name} with {confidence:.2f}% confidence.")
         # Free Memory
-        del image_bytes # Memory khali karo
-        gc.collect()
+        #del image_bytes # Memory khali karo
+        #gc.collect()
 
         # Return the results. A dummy list is returned for the 'preds' array as it's not needed.
         return pred_class_name, confidence, []
